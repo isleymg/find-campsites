@@ -1,0 +1,4 @@
+argparse
+requests==2.1.0
+selenium-requests
+
