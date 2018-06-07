@@ -2,9 +2,10 @@
 import argparse
 import copy
 import requests
-# from seleniumrequests import Chrome
 from selenium import webdriver
 from time import sleep
+from selenium.webdriver.chrome.options import Options
+
 
 try:
     import urlparse
@@ -22,11 +23,10 @@ CAMPGROUNDS = {
     # '70927': 'north-pines',
     # '70926': 'tuolumne-meadows',
     '70930': 'crane-flat',
-    '70929': 'hodgdon-meadow'
+    # '70929': 'hodgdon-meadow'
 }
 
 START_DATES = {
-
 
 }
 
@@ -39,12 +39,20 @@ def findCampSites(dates):
         arrival_date = formatDate(dates["start_date"])
         departure_date = formatDate(dates["end_date"])
 
-        browser = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument("headless")
+        chrome_options.add_argument('window-size=1200,1100')
+
+        browser = webdriver.Chrome(chrome_options=chrome_options)
+        # browser.minimize_window()
+
         content_raw = sendSeleniumRequest(browser, campground, arrival_date, departure_date)
 
         site_links = getSiteListSelenium(browser)
-        print(campground)
-        print(site_links)
+        print(CAMPGROUNDS[campground])
+        for i in site_links:
+            print(i)
+        browser.close();
     return site_links
 
 def getNextDay(date):
@@ -59,15 +67,12 @@ def formatDate(date):
 
 def getSiteListSelenium(browser):
     site_links = []
-    # sites = browser.find_elements_by_class_name("book")
-    sites = browser.find_elements_by_xpath("//*[contains(text(), 'available')]")
+    sites = browser.find_elements_by_class_name("book")
     if len(sites) > 0:
         for site in sites:
-            booking_link = site.get_attribute("href")
-            site_links.append(booking_link)
-
-        # sites[0].click()
-        # bookSite(browser)
+            if site.text == "See Details":
+                booking_link = site.get_attribute("href")
+                site_links.append(booking_link)
     return site_links
 
 def bookSite(browser):
@@ -81,23 +86,19 @@ def bookSite(browser):
 
 def sendSeleniumRequest(browser, campground, arrival_date, departure_date):
     campground_url = buildCampgroundUrl(campground)
-    resp = ''
-    while resp == '':
+    keep_connecting = True
+    while keep_connecting:
         try:
+            browser.get(campground_url)
+            arrival_date_input = browser.find_element_by_id("arrivalDate")
+            arrival_date_input.send_keys(arrival_date)
+            departure_date_input = browser.find_element_by_id("departureDate")
+            departure_date_input.send_keys(departure_date)
 
-            resp = requests.get(campground_url)
-            if resp.status_code != 200:
-                raise Exception("FailedRequest",
-                                "ERROR, %d code received from %s".format(resp.status_code, campground_url))
-            else:
-                browser.get(campground_url)
-                arrival_date_input = browser.find_element_by_id("arrivalDate")
-                arrival_date_input.send_keys(arrival_date)
-                departure_date_input = browser.find_element_by_id("departureDate")
-                departure_date_input.send_keys(departure_date)
+            submitButton = browser.find_element_by_id("filter")
+            submitButton.click()
+            keep_connecting = False
 
-                submitButton = browser.find_element_by_id("filter")
-                submitButton.click()
         except:
             print("sleeping...")
             sleep(5)
@@ -114,15 +115,8 @@ if __name__ == "__main__":
     # arg_dict = vars(args)
     # if 'end_date' not in arg_dict or not arg_dict['end_date']:
     #     arg_dict['end_date'] = getNextDay(arg_dict['start_date'])
-
+    #
     # sites = findCampSites(arg_dict)
-    sites = findCampSites({'start_date': '2018-09-15', 'end_date': '2018-09-17'})
-    if sites:
-        for site in sites:
-            print (site)
-            # "&arrivalDate={}&departureDate={}" \
-            # .format(
-            #         urllib.quote_plus(formatDate(arg_dict['start_date'])),
-            #         urllib.quote_plus(formatDate(arg_dict['end_date'])))
+    sites = findCampSites({'start_date': '2018-09-28', 'end_date': '2018-09-29'})
     print('end.')
 
