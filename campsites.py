@@ -44,9 +44,8 @@ def findCampSites(dates):
         chrome_options.add_argument('window-size=1200,1100')
 
         browser = webdriver.Chrome(chrome_options=chrome_options)
-        # browser.minimize_window()
 
-        content_raw = sendSeleniumRequest(browser, campground, arrival_date, departure_date)
+        sendSeleniumRequest(browser, campground, arrival_date, departure_date)
 
         site_links = getSiteListSelenium(browser)
         print(CAMPGROUNDS[campground])
@@ -107,16 +106,15 @@ def sendSeleniumRequest(browser, campground, arrival_date, departure_date):
 
 if __name__ == "__main__":
     print("--Looking for campsites--")
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--start_date", required=True, type=str, help="Start date [YYYY-MM-DD]")
-    # parser.add_argument("--end_date", type=str, help="End date [YYYY-MM-DD]")
-    #
-    # args = parser.parse_args()
-    # arg_dict = vars(args)
-    # if 'end_date' not in arg_dict or not arg_dict['end_date']:
-    #     arg_dict['end_date'] = getNextDay(arg_dict['start_date'])
-    #
-    # sites = findCampSites(arg_dict)
-    sites = findCampSites({'start_date': '2018-09-28', 'end_date': '2018-09-29'})
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start_date", required=True, type=str, help="Start date [YYYY-MM-DD]")
+    parser.add_argument("--end_date", type=str, help="End date [YYYY-MM-DD]")
+
+    args = parser.parse_args()
+    arg_dict = vars(args)
+    if 'end_date' not in arg_dict or not arg_dict['end_date']:
+        arg_dict['end_date'] = getNextDay(arg_dict['start_date'])
+
+    sites = findCampSites(arg_dict)
     print('end.')
 
