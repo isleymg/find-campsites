@@ -1,17 +1,20 @@
 # Campsite Availability Scraping
-This is a simple script for scraping availability of campgrounds! The recreation.gov api doesn't reveal campsite availability, so this script spoofs a session through their search portal to allow programmatic polling of campsite availability.
+### Forked from https://github.com/bri-bri/yosemite-camping
+See Brian Hansen's README for information on his yosemite-camping script works. Credit goes to him for the idea and base functions.
 
-It's currently hardcoded for yosemite, but with a bit of network sniffing you can reconfigure for other national parks.
+This script produces a similar output to bri-bri/yosemite-camping by creating a session at recreation.gov and searching for hard-coded campsites during a specified date range.
 
-### Sample Output
-List of campsites with availabilities on queried dates + links.
-```
-UPPER PINES, Booking Url: http://www.recreation.gov/unifSearchInterface.do?interface=bookcamp&contractCode=NRSO&parkId=70925
-LOWER PINES, Booking Url: http://www.recreation.gov/unifSearchInterface.do?interface=bookcamp&contractCode=NRSO&parkId=70928
-NORTH PINES, Booking Url: http://www.recreation.gov/unifSearchInterface.do?interface=bookcamp&contractCode=NRSO&parkId=70927
-```
+Modifications were made to the original script because the search result pages at recreation.gov have changed from mostly static webpages to dynamically generated webpages.
+The original method of only using the Requests module isn't able to grab all of the page content, and returns the message "Your browser does not support JavaScript!".
 
-# Instructions
+This updated scraper uses the Selenium module and headless Chrome webdriver to programatically control a browser and automate location and date inputs.
+
+# Use Case
+This script is useful for searching for Yosemite campsites after the first booking window for each month, when most campsites are full and you want to be notified when someone cancels their reservation.
+
+
+# Instructions (same as bri-bri/yosemite-camping)
+
 Install requirements:
 ```
 pip install -r requirements.txt
@@ -22,20 +25,3 @@ Best use is to set a crontab on a ~5 minute interval (I've found that a 10-minut
 
 `campsites.sh` demos a simple bash script wrapping the python script and opening a text file if results are found that could be set up to be triggered through cron.
 
-## Searching for parks other than Yosemite
-
-### Get LOCATION_PAYLOAD request data
-* Use your preferred proxy or network analyzer to capture requests (Charles Proxy, Wireshark, etc)
-* Visit recreation.gov in your browser
-* Enter target park name - click the park in the prefilled Auto-suggest dropdown that appears
-* Find logs for the POST request to www.recreation.gov/unifSearch.do
-* Copy the REQUEST body params as JSON into the `LOCATION_PAYLOAD` dict in `campsites.py`
-* (keep the search results page open and continue to next section)
-
-### Whitelist campsites by id in PARKS dict
-* From the list of campgrounds and attractions listed in the results for your park, choose the campgrounds you'd like to stay at
-* For each campground you choose, copy the campground's link URL
-* Grab the parkId URL param and add it as a key to the PARKS dict in `campsites.py`, the value should be a human readable campground name.
-
-
-# find-campsites

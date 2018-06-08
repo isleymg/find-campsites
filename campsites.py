@@ -1,33 +1,25 @@
 #!/usr/bin/env python
 import argparse
-import copy
-import requests
 from selenium import webdriver
 from time import sleep
 from selenium.webdriver.chrome.options import Options
 
-
-try:
-    import urlparse
-except ImportError:
-    import urllib.parse as urlparse
 from datetime import datetime, timedelta
 
 CAMP_URL_BASE = "https://www.recreation.gov/camping/"
 CAMP_URL_PARAMS = "/r/campsiteSearch.do?site=all&type=9&minimal=no&search=site&contractCode=NRSO&parkId="
-
 
 CAMPGROUNDS = {
     # '70925': 'upper-pines',
     # '70928': 'lower-pines',
     # '70927': 'north-pines',
     # '70926': 'tuolumne-meadows',
-    '70930': 'crane-flat',
-    # '70929': 'hodgdon-meadow'
+    # '70930': 'crane-flat',
+    '70929': 'hodgdon-meadow'
 }
 
 START_DATES = {
-
+    # TODO: Add functionality to search for available campsites for multiple dates
 }
 
 def buildCampgroundUrl(campground_id):
@@ -48,7 +40,7 @@ def findCampSites(dates):
         sendSeleniumRequest(browser, campground, arrival_date, departure_date)
 
         site_links = getSiteListSelenium(browser)
-        print(CAMPGROUNDS[campground])
+        print('Available campgrounds in ' + CAMPGROUNDS[campground].upper().replace('-', ' '))
         for i in site_links:
             print(i)
         browser.close();
@@ -75,12 +67,13 @@ def getSiteListSelenium(browser):
     return site_links
 
 def bookSite(browser):
+    # TODO: Implment functionality to programmatically book a campsite
     book_button = browser.find_element_by_id("btnbookdates")
     book_button.click()
-
     email_input = browser.find_element_by_class_name('TextBoxRenderer')
-    email_input.send_keys("isleymgao@gmail.com")
+    email_input.send_keys("<USERNAME>")
     password_input = browser.find_element_by_id('PasswordBoxRenderer')
+    password_input.send_keys('<PASSWORD>')
 
 
 def sendSeleniumRequest(browser, campground, arrival_date, departure_date):
@@ -105,7 +98,7 @@ def sendSeleniumRequest(browser, campground, arrival_date, departure_date):
 
 
 if __name__ == "__main__":
-    print("--Looking for campsites--")
+    print("---")
     parser = argparse.ArgumentParser()
     parser.add_argument("--start_date", required=True, type=str, help="Start date [YYYY-MM-DD]")
     parser.add_argument("--end_date", type=str, help="End date [YYYY-MM-DD]")
