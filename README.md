@@ -26,8 +26,11 @@ Open config.yml and edit campgrounds and dates to be searched.
 
 Adding campgrounds:
 I listed the more popular yosemite campsites in the config file. You can find other campsites and their parkID by going to www.recreation.gov, searching for your campsite, and finding the parkID in the URL.
+
 For example: https://www.recreation.gov/camping/wawona/r/campgroundDetails.do?contractCode=NRSO&parkId=70924
-    Enter into config.yaml:
+    
+   Enter into config.yaml:
+      
       70924: wawona
 
 Adding dates:
