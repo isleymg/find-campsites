@@ -24,7 +24,7 @@ pip install -r requirements.txt
 Use:
 Open config.yml and edit campgrounds and dates to be searched.
 
-Adding campgrounds:
+##### Adding campgrounds:
 I listed the more popular yosemite campsites in the config file. You can find other campsites and their parkID by going to www.recreation.gov, searching for your campsite, and finding the parkID in the URL.
 
 For example: https://www.recreation.gov/camping/wawona/r/campgroundDetails.do?contractCode=NRSO&parkId=70924
@@ -33,7 +33,7 @@ For example: https://www.recreation.gov/camping/wawona/r/campgroundDetails.do?co
       
       70924: wawona
 
-Adding dates:
+##### Adding dates:
 start_date is a mandatory input. If no end_date is specified, it will populate with the date of the next day and will search for just one night of camping.
 Dates take input as YYYY-MM-DD.
 
