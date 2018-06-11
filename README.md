@@ -8,7 +8,7 @@ This script produces a similar output to bri-bri/yosemite-camping by creating a 
 Modifications were made to the original script because the search result pages at recreation.gov have changed from mostly static webpages to dynamically generated webpages.
 The original method of only using the Requests module isn't able to grab all of the page content, and returns the message "Your browser does not support JavaScript!".
 
-This updated scraper uses the Selenium module and headless Chrome webdriver to programatically control a browser and automate location and date inputs.
+This updated scraper uses the Selenium module and headless Chrome webdriver to programatically control a browser and automate location and date inputs. Returns a list of available campsites URLs for each date and campground specified in config file.
 
 # Use Case
 Did you miss the Yosemite campsite reservation day this month and now you're refreshing campground pages hoping someone cancels their reservation?
@@ -17,14 +17,14 @@ This script is useful for searching for Yosemite campsites after the first booki
 
 # Instructions
 
-Install requirements:
+### Install requirements:
 ```
 pip install -r requirements.txt
 ```
-Use:
+### Use:
 Open config.yml and edit campgrounds and dates to be searched.
 
-##### Adding campgrounds:
+#### Adding campgrounds:
 I listed the more popular yosemite campsites in the config file. You can find other campsites and their parkID by going to www.recreation.gov, searching for your campsite, and finding the parkID in the URL.
 
 For example: https://www.recreation.gov/camping/wawona/r/campgroundDetails.do?contractCode=NRSO&parkId=70924
@@ -33,9 +33,9 @@ For example: https://www.recreation.gov/camping/wawona/r/campgroundDetails.do?co
       
       70924: wawona
 
-##### Adding dates:
+#### Adding dates:
 start_date is a mandatory input. If no end_date is specified, it will populate with the date of the next day and will search for just one night of camping.
 Dates take input as YYYY-MM-DD.
 
-Running the script: `python campsites.py`
+### Running the script: `python campsites.py`
 
