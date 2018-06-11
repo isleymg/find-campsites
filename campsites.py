@@ -3,57 +3,50 @@ import argparse
 from selenium import webdriver
 from time import sleep
 from selenium.webdriver.chrome.options import Options
-
 from datetime import datetime, timedelta
+import yaml
+
+with open("config.yml", 'r') as ymlfile:
+    config = yaml.load(ymlfile)
+
 
 CAMP_URL_BASE = "https://www.recreation.gov/camping/"
 CAMP_URL_PARAMS = "/r/campsiteSearch.do?site=all&type=9&minimal=no&search=site&contractCode=NRSO&parkId="
 
-CAMPGROUNDS = {
-    # '70925': 'upper-pines',
-    # '70928': 'lower-pines',
-    # '70927': 'north-pines',
-    # '70926': 'tuolumne-meadows',
-    # '70930': 'crane-flat',
-    '70929': 'hodgdon-meadow'
-}
-
-START_DATES = {
-    # TODO: Add functionality to search for available campsites for multiple dates
-}
 
 def buildCampgroundUrl(campground_id):
-    return CAMP_URL_BASE + CAMPGROUNDS[campground_id] + CAMP_URL_PARAMS + campground_id
+    return CAMP_URL_BASE + config['campgrounds'][campground_id] + CAMP_URL_PARAMS + str(campground_id)
 
 
-def findCampSites(dates):
-    for campground in CAMPGROUNDS:
-        arrival_date = formatDate(dates["start_date"])
-        departure_date = formatDate(dates["end_date"])
+def findCampSites(dates, campground):
+    arrival_date = formatDate(dates["start_date"])
+    departure_date = formatDate(dates["end_date"])
 
-        chrome_options = Options()
-        chrome_options.add_argument("headless")
-        chrome_options.add_argument('window-size=1200,1100')
+    chrome_options = Options()
+    chrome_options.add_argument("headless")
+    chrome_options.add_argument('window-size=1200,1100')
 
-        browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser = webdriver.Chrome(chrome_options=chrome_options)
 
-        sendSeleniumRequest(browser, campground, arrival_date, departure_date)
+    sendSeleniumRequest(browser, campground, arrival_date, departure_date)
 
-        site_links = getSiteListSelenium(browser)
-        print('Available campgrounds in ' + CAMPGROUNDS[campground].upper().replace('-', ' '))
+    site_links = getSiteListSelenium(browser)
+    print("\nRequested date: " + arrival_date + " to " + departure_date)
+    print(config['campgrounds'][campground].upper().replace('-', ' ') + " CAMPGROUND")
+    if site_links:
         for i in site_links:
             print(i)
-        browser.close();
+    else:
+        print("NONE FOUND.")
+    browser.close()
     return site_links
 
 def getNextDay(date):
-    date_object = datetime.strptime(date, "%Y-%m-%d")
-    next_day = date_object + timedelta(days=1)
+    next_day = date + timedelta(days=1)
     return datetime.strftime(next_day, "%Y-%m-%d")
 
 def formatDate(date):
-    date_object = datetime.strptime(date, "%Y-%m-%d")
-    date_formatted = datetime.strftime(date_object, "%a %b %d %Y")
+    date_formatted = datetime.strftime(date, "%a %b %d %Y")
     return date_formatted
 
 def getSiteListSelenium(browser):
@@ -67,7 +60,7 @@ def getSiteListSelenium(browser):
     return site_links
 
 def bookSite(browser):
-    # TODO: Implment functionality to programmatically book a campsite
+    # TODO: Implement functionality to programmatically book a campsite
     book_button = browser.find_element_by_id("btnbookdates")
     book_button.click()
     email_input = browser.find_element_by_class_name('TextBoxRenderer')
@@ -92,22 +85,22 @@ def sendSeleniumRequest(browser, campground, arrival_date, departure_date):
             keep_connecting = False
 
         except:
-            print("sleeping...")
             sleep(5)
             continue
 
 
 if __name__ == "__main__":
-    print("---")
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--start_date", required=True, type=str, help="Start date [YYYY-MM-DD]")
-    parser.add_argument("--end_date", type=str, help="End date [YYYY-MM-DD]")
+    # Running this script in terminal: python campsites.py --start_date 2015-04-24 --end_date 2015-04-25
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--start_date", required=True, type=str, help="Start date [YYYY-MM-DD]")
+    # parser.add_argument("--end_date", type=str, help="End date [YYYY-MM-DD]")
+    #
+    # args = parser.parse_args()
+    # arg_dict = vars(args)
 
-    args = parser.parse_args()
-    arg_dict = vars(args)
-    if 'end_date' not in arg_dict or not arg_dict['end_date']:
-        arg_dict['end_date'] = getNextDay(arg_dict['start_date'])
-
-    sites = findCampSites(arg_dict)
-    print('end.')
+    for arg_dict in config['dates_list']:
+        if 'end_date' not in arg_dict or not arg_dict['end_date']:
+            arg_dict['end_date'] = getNextDay(arg_dict['start_date'])
+        for campground in config['campgrounds']:
+            sites = findCampSites(arg_dict, campground)
 

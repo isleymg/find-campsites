@@ -1,0 +1,14 @@
+campgrounds:
+  70925: upper-pines
+  70928: lower-pines
+  70927: north-pines
+  70926: tuolumne-meadows
+  70930: crane-flat
+#  70929: hodgdon-meadow
+#  70924: wawona
+dates_list:
+  - start_date: 2018-06-22
+    end_date: 2018-06-23
+  - start_date: 2018-07-13
+    end_date: 2018-07-14
+
