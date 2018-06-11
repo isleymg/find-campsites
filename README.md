@@ -37,5 +37,6 @@ For example: https://www.recreation.gov/camping/wawona/r/campgroundDetails.do?co
 start_date is a mandatory input. If no end_date is specified, it will populate with the date of the next day and will search for just one night of camping.
 Dates take input as YYYY-MM-DD.
 
-### Running the script: `python campsites.py`
+### Running the script: 
+`python campsites.py`
 
