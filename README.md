@@ -4,6 +4,19 @@ See Brian Hansen's README for information on his yosemite-camping script works. 
 
 This script produces a similar output to bri-bri/yosemite-camping by creating a session at recreation.gov and searching for hard-coded campsites during a specified date range.
 
+### Sample Output
+```
+Requested date: Fri Jul 13 2018 to Sat Jul 14 2018
+TUOLUMNE MEADOWS CAMPGROUND
+https://www.recreation.gov/camping/tuolumne-meadows/r/campsiteDetails.do?contractCode=NRSO&siteId=203389&parkId=70926
+https://www.recreation.gov/camping/tuolumne-meadows/r/campsiteDetails.do?contractCode=NRSO&siteId=203484&parkId=70926
+https://www.recreation.gov/camping/tuolumne-meadows/r/campsiteDetails.do?contractCode=NRSO&siteId=203489&parkId=70926
+
+Requested date: Fri Jul 13 2018 to Sat Jul 14 2018
+CRANE FLAT CAMPGROUND
+https://www.recreation.gov/camping/crane-flat/r/campsiteDetails.do?contractCode=NRSO&siteId=304369&parkId=70930 
+```
+
 ### Changes In This Repo
 Modifications were made to the original script because the search result pages at recreation.gov have changed from mostly static webpages to dynamically generated webpages.
 The original method of only using the Requests module isn't able to grab all of the page content, and returns the message "Your browser does not support JavaScript!".
@@ -39,4 +52,5 @@ Dates take input as YYYY-MM-DD.
 
 ### Running the script: 
 `python campsites.py`
+
 
